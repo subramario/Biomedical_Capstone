@@ -21,23 +21,20 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 //LIBRARIES
-//Github library --> for use with the accelerometer
-#include "MPU9250.h" /
-//Data structure for declaring a thick size array that writes over the oldest element
-//We only care about a certain number of elements for the fall --> only analyze for spike in values to detect fall
-//Angular velocity and linear acceleration
-#include <CircularBuffer.h>
+#include "MPU9250.h" //Used for the accelerometer
+#include <CircularBuffer.h> //Bounded queue data strcuture used to buffer data streams
+
 
 //GLOBAL VARIABLES
-// Declare MPU9250 object with the MPU-9250 sensor on SPI bus 0 and chip select pin 10
-MPU9250 IMU(SPI,10);
+MPU9250 IMU(SPI,10); // Declare MPU9250 object with the MPU-9250 sensor on SPI bus 0 and chip select pin 10
 int status;
 
 // Declare buffer / queue for sampling and averaging accelerometer data. Specify buffer size as required
-const uint8_t bufferLength = 100;
-CircularBuffer<float, bufferLength> buffer_X_accel; //accelerometer reading
-CircularBuffer<float, bufferLength> buffer_Y_gyro; //gyrometer reading
+const uint8_t bufferLength = 100; //Only require 100 samples at any time to accurately detect spikes in linear acceleration and angular velocity
+CircularBuffer<float, bufferLength> buffer_X_accel; //Buffer to continuously track linear acceleration through accelerometer
+CircularBuffer<float, bufferLength> buffer_Y_gyro; //Buffer to continuously track angular velocity through gyrometer
 
 // Pushbutton pin
 const int buttonPin = 2; //start button on the jacket --> starts the program
@@ -61,7 +58,7 @@ unsigned long blinkTimePrior;
 bool sensor_flag = false;
 bool trigger_flag = false;
 
-//SETUP LOOP --> 
+//SETUP LOOP 
 void setup() {
   // serial to display data
   /*
@@ -78,7 +75,8 @@ void setup() {
 
   // start communication with IMU 
   status = IMU.begin();
-  if (status < 0) { //Error Checking for computer connected testing
+  //Error Checking for computer connected testing
+  if (status < 0) { 
     /*
     Serial.println("IMU initialization unsuccessful");
     Serial.println("Check IMU wiring or try cycling power");
