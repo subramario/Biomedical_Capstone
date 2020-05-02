@@ -1,12 +1,13 @@
 /*
 CalibrateCheck.ino
-Ouput biases+scale factors for accelerometer & magnetometer
-*/
-/*
-Two ways to calibrate:
-  1) Set it down so x and y = 0, z = -9.8 --> we used this one
-  2) Use specific motion (Figure 8 motion) to gather values
+Use Case:
+Ouput the biases and scale factors for accelerometer & magnetometer
 
+Calibration can be done in two ways:
+  1) [Used in this program] Set the accelerometer on a flat surface and run the script.
+      The accelerometer calculates the deltas between current readings and the expected values (x = 0, y = 0, z = -9.8).
+      It sends the bias and scale values to the serial for output.
+  2) Use specific motion (Figure 8 motion) to gather values.
 */
 
 #include "MPU9250.h"
@@ -17,9 +18,11 @@ int status;
 float value;
 
 void setup() {
+  
   // serial to display instructions
   Serial.begin(115200);
   while(!Serial) {}
+  
   // start communication with IMU 
   status = Imu.begin();
   if (status < 0) {
@@ -29,6 +32,8 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
+  
+  // Print out bias values and scale factors
   value = Imu.getAccelBiasX_mss();
   Serial.print("Accel Bias X = ");
   Serial.println(value);
@@ -66,7 +71,7 @@ void setup() {
   Serial.print("Mag Scale Z = ");
   Serial.println(value);
   
-  Serial.println("Done");
+  Serial.println("Calibration Done");
 }
 
 void loop() {}
