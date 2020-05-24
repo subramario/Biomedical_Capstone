@@ -1,4 +1,4 @@
-# Biomedical_Capstone
+# Cervical Protection Device
 Recipient of the Social Impact Award at the University of Waterloo, **NeXafe** is a cervical protection device designed to protect the elderly from fall associated whiplash damage. This repository contains the software we used to build our award winning 4th Year Mechanical Engineering Capstone!
 
 ## Capstone Video Presentation
